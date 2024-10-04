@@ -392,7 +392,7 @@
                 <DisplayName>PASSWORD</DisplayName>
                 <DataType>string</DataType>
                 <UserHelpText>Enter your password</UserHelpText>
-                <UserInputType>TextBox</UserInputType>
+                <UserInputType>Password</UserInputType>
             </ClaimType>
             <ClaimType Id="extension_UserPin">
                 <DisplayName>User Pin</DisplayName>
@@ -458,7 +458,7 @@
                 <Parameters>
                   <Parameter Id="RegularExpression">^[0-9]+$</Parameter>
                 </Parameters>
-              </Predicate>
+            </Predicate>
         </Predicates>
         <PredicateValidations>
             <PredicateValidation Id="email">

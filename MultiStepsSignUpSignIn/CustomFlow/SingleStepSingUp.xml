@@ -341,9 +341,7 @@
                 <DataType>string</DataType>
                 <UserHelpText>Enter your verification code</UserHelpText>
                 <UserInputType>TextBox</UserInputType>
-                <!--Restriction>
-                <Pattern RegularExpression="^[0-9]{1,15}$" HelpText="Please enter digits" />
-              </Restriction-->
+                <PredicateValidationReference Id="verificationCodeValidation" />
             </ClaimType>
             <ClaimType Id="extension_TPlusUserType">
                 <DisplayName>Select</DisplayName>
@@ -408,6 +406,17 @@
                     <Parameter Id="RegularExpression">^[^\\+]+$</Parameter>
                 </Parameters>
             </Predicate>
+            <Predicate Id="IsLength6" Method="IsLengthRange" HelpText="The verification code must be 6 characters.">
+                <Parameters>
+                  <Parameter Id="Minimum">6</Parameter>
+                  <Parameter Id="Maximum">6</Parameter>
+                </Parameters>
+            </Predicate>
+            <Predicate Id="VerificationCode" Method="MatchesRegex" HelpText="The verification code must be a number only.">
+                <Parameters>
+                  <Parameter Id="RegularExpression">^[0-9]+$</Parameter>
+                </Parameters>
+            </Predicate>
         </Predicates>
         <PredicateValidations>
             <PredicateValidation Id="email">
@@ -415,6 +424,20 @@
                     <PredicateGroup Id="email">
                         <PredicateReferences>
                             <PredicateReference Id="email" />
+                        </PredicateReferences>
+                    </PredicateGroup>
+                </PredicateGroups>
+            </PredicateValidation>
+            <PredicateValidation Id="verificationCodeValidation">
+                <PredicateGroups>
+                    <PredicateGroup Id="IsLengthShouldbe6Group">
+                        <PredicateReferences>
+                            <PredicateReference Id="IsLength6"/>
+                        </PredicateReferences>
+                    </PredicateGroup>
+                    <PredicateGroup Id="VerificationCodeGroup">
+                        <PredicateReferences>
+                            <PredicateReference Id="VerificationCode"/>
                         </PredicateReferences>
                     </PredicateGroup>
                 </PredicateGroups>
@@ -701,10 +724,10 @@
                         <InputClaimsTransformation ReferenceId="CreateRandomUPNUserName" />
                         <InputClaimsTransformation ReferenceId="CreateUserPrincipalName" />
                     </InputClaimsTransformations>
-                    <InputClaims>
-                        <InputClaim ClaimTypeReferenceId="countryCode" />
-                        <InputClaim ClaimTypeReferenceId="nationalNumber" />
-                    </InputClaims>
+                    <DisplayClaims>
+                        <DisplayClaim ClaimTypeReferenceId="countryCode" Required="true" />
+                        <DisplayClaim ClaimTypeReferenceId="nationalNumber" Required="true" />
+                    </DisplayClaims>
                     <OutputClaims>
                         <OutputClaim ClaimTypeReferenceId="countryCode" /> 
                         <OutputClaim ClaimTypeReferenceId="nationalNumber" /> 
@@ -736,9 +759,9 @@
                     <Metadata>
                         <Item Key="ContentDefinitionReferenceId">SelfAssertedContentDefinition</Item>
                     </Metadata>
-                    <InputClaims>
-                        <InputClaim ClaimTypeReferenceId="verificationCode" />
-                    </InputClaims>
+                    <DisplayClaims>
+                        <DisplayClaim ClaimTypeReferenceId="verificationCode" Required="true" />
+                    </DisplayClaims>
                     <OutputClaims>
                         <OutputClaim ClaimTypeReferenceId="verificationCode" />
                         <OutputClaim ClaimTypeReferenceId="objectId" />
@@ -1087,12 +1110,12 @@
                     </ClaimsExchanges>
                 </OrchestrationStep>
                 <!-- phone section  -->
-                <OrchestrationStep Order="5" Type="ClaimsExchange">
+                <!-- <OrchestrationStep Order="5" Type="ClaimsExchange">
                     <ClaimsExchanges>
                       <ClaimsExchange Id="RESTEnrichToken" TechnicalProfileReferenceId="REST-EnrichToken" />
                     </ClaimsExchanges>
-                </OrchestrationStep>
-                <OrchestrationStep Order="6" Type="SendClaims"
+                </OrchestrationStep> -->
+                <OrchestrationStep Order="5" Type="SendClaims"
                     CpimIssuerTechnicalProfileReferenceId="JwtIssuer" />
             </OrchestrationSteps>
         </UserJourney>
@@ -1117,7 +1140,7 @@
                 <OutputClaim ClaimTypeReferenceId="givenName" />
                 <OutputClaim ClaimTypeReferenceId="surname" />
                 <OutputClaim ClaimTypeReferenceId="extension_TPlusUserType" />
-                <OutputClaim ClaimTypeReferenceId="permissions" />
+                <!-- <OutputClaim ClaimTypeReferenceId="permissions" /> -->
                 <OutputClaim ClaimTypeReferenceId="signInNames.phoneNumber" />
                 <OutputClaim ClaimTypeReferenceId="strongAuthenticationEmailAddress" />
                 <OutputClaim ClaimTypeReferenceId="tenantId" AlwaysUseDefaultValue="true"
